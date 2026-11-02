@@ -1,0 +1,402 @@
+/* ============================================
+   Review Sentiment Classifier - Styles
+   ============================================ */
+
+:root {
+    --color-primary: #4f46e5;
+    --color-primary-hover: #4338ca;
+    --color-positive: #16a34a;
+    --color-positive-bg: #dcfce7;
+    --color-negative: #dc2626;
+    --color-negative-bg: #fee2e2;
+    --color-neutral: #d97706;
+    --color-neutral-bg: #fef3c7;
+    --color-bg: #f8fafc;
+    --color-surface: #ffffff;
+    --color-text: #1e293b;
+    --color-text-secondary: #64748b;
+    --color-border: #e2e8f0;
+    --color-error: #ef4444;
+    --color-error-bg: #fef2f2;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+    --transition: 200ms ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* ============================================
+   Container & Layout
+   ============================================ */
+
+.container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 3rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: var(--color-text-secondary);
+    font-size: 1.05rem;
+}
+
+footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+}
+
+/* ============================================
+   Form Section
+   ============================================ */
+
+.form-section {
+    background: var(--color-surface);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 1.5rem;
+}
+
+.form-section label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-family: inherit;
+    line-height: 1.5;
+    resize: vertical;
+    transition: border-color var(--transition);
+    outline: none;
+}
+
+textarea:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+textarea::placeholder {
+    color: #94a3b8;
+}
+
+.form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+#char-count {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Buttons
+   ============================================ */
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+#submit-btn {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color var(--transition), transform var(--transition);
+}
+
+#submit-btn:hover:not(:disabled) {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-1px);
+}
+
+#submit-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+#submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-loader {
+    display: inline-block;
+}
+
+/* ============================================
+   Result Section
+   ============================================ */
+
+.result-section {
+    margin-bottom: 1.5rem;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.result-card {
+    background: var(--color-surface);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+}
+
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.result-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* Sentiment Badges */
+
+.badge {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.badge.positive {
+    background-color: var(--color-positive-bg);
+    color: var(--color-positive);
+}
+
+.badge.negative {
+    background-color: var(--color-negative-bg);
+    color: var(--color-negative);
+}
+
+.badge.neutral {
+    background-color: var(--color-neutral-bg);
+    color: var(--color-neutral);
+}
+
+/* Confidence Meter */
+
+.confidence-meter {
+    margin-bottom: 1.25rem;
+}
+
+.confidence-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-secondary);
+}
+
+#confidence-value {
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.confidence-bar {
+    height: 10px;
+    background-color: var(--color-border);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.confidence-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.5s ease, background-color 0.3s ease;
+    width: 0%;
+}
+
+.confidence-fill.positive {
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.confidence-fill.negative {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.confidence-fill.neutral {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.result-description {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* ============================================
+   Examples Section
+   ============================================ */
+
+.examples-section {
+    margin-bottom: 1.5rem;
+}
+
+.examples-section h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+.example-buttons {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.example-btn {
+    flex: 1;
+    min-width: 140px;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-text);
+    transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+.example-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.example-btn.positive:hover {
+    border-color: var(--color-positive);
+}
+
+.example-btn.negative:hover {
+    border-color: var(--color-negative);
+}
+
+.example-btn.neutral:hover {
+    border-color: var(--color-neutral);
+}
+
+/* ============================================
+   Error Toast
+   ============================================ */
+
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-error);
+    color: white;
+    padding: 0.85rem 1.5rem;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    z-index: 1000;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.toast-icon {
+    font-size: 1.1rem;
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+@media (max-width: 640px) {
+    .container {
+        padding: 1.5rem 1rem 2rem;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    .form-section, .result-card {
+        padding: 1.25rem;
+    }
+
+    .form-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    #char-count {
+        text-align: center;
+    }
+
+    #submit-btn {
+        width: 100%;
+    }
+
+    .example-buttons {
+        flex-direction: column;
+    }
+
+    .example-btn {
+        min-width: auto;
+    }
+}

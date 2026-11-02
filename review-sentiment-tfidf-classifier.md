@@ -188,7 +188,7 @@ Each stage will be validated by running the corresponding script and verifying t
 
 # Delivery Steps
 
-###   Step 1: Set up project structure and preprocessing pipeline
+### ✓ Step 1: Set up project structure and preprocessing pipeline
 Create the project skeleton under `review-sentiment-tfidf/` and implement the text preprocessing utilities.
 - Create directory structure: `data/`, `scripts/`, `models/`, `notebooks/`
 - Implement `scripts/preprocess.py` with functions: `clean_text()`, `remove_html()`, `remove_urls()`, `remove_stopwords()`, `lemmatize()`, and a combined `preprocess_review()` pipeline
@@ -196,7 +196,7 @@ Create the project skeleton under `review-sentiment-tfidf/` and implement the te
 - Create a sample `data/reviews.csv` loader that fetches a public dataset (e.g., IMDB reviews) or provides a template for the user's own data
 - Add unit tests for preprocessing functions in `scripts/tests/test_preprocess.py`
 
-###   Step 2: Implement training pipeline with multiple classifiers
+### ✓ Step 2: Implement training pipeline with multiple classifiers
 Build the end-to-end training script that trains, compares, and saves the best model.
 - Implement `scripts/train.py`:
   - Load and preprocess the dataset
@@ -208,7 +208,7 @@ Build the end-to-end training script that trains, compares, and saves the best m
 - Run `train.py` to produce the initial model artifacts
 - Verify model files are saved correctly
 
-###   Step 3: Implement evaluation script with metrics and visualization
+### ✓ Step 3: Implement evaluation script with metrics and visualization
 Create a standalone evaluation script that loads saved models and produces detailed metrics.
 - Implement `scripts/evaluate.py`:
   - Load model artifacts from `models/`
@@ -219,7 +219,7 @@ Create a standalone evaluation script that loads saved models and produces detai
 - Run `evaluate.py` and verify the output metrics are reasonable (F1 > 0.75 for a standard dataset)
 - Add the confusion matrix image to `.gitignore` or commit as a deliverable
 
-###   Step 4: Build Django web application with prediction interface
+### ✓ Step 4: Build Django web application with prediction interface
 Create the Django project and app that serves the sentiment classifier.
 - Create Django project `sentiment_app/` with `sentiment` app
 - Implement `sentiment/models_loader.py`: loads `.pkl` files and exposes a `predict_review(text)` function

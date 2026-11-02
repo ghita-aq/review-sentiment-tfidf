@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Sentiment Classifier</title>
+    <style>
+        /* ============================================
+           Review Sentiment Classifier - Styles
+           ============================================ */
+
+        :root {
+            --color-primary: #4f46e5;
+            --color-primary-hover: #4338ca;
+            --color-positive: #16a34a;
+            --color-positive-bg: #dcfce7;
+            --color-negative: #dc2626;
+            --color-negative-bg: #fee2e2;
+            --color-neutral: #d97706;
+            --color-neutral-bg: #fef3c7;
+            --color-bg: #f8fafc;
+            --color-surface: #ffffff;
+            --color-text: #1e293b;
+            --color-text-secondary: #64748b;
+            --color-border: #e2e8f0;
+            --color-error: #ef4444;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+            --transition: 200ms ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 3rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--color-text-secondary);
+            font-size: 1.05rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--color-border);
+            color: var(--color-text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: var(--color-surface);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-section label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-family: inherit;
+            line-height: 1.5;
+            resize: vertical;
+            transition: border-color var(--transition);
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        #char-count {
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* Buttons */
+        button {
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        #submit-btn {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.75rem;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color var(--transition), transform var(--transition);
+        }
+
+        #submit-btn:hover:not(:disabled) {
+            background-color: var(--color-primary-hover);
+            transform: translateY(-1px);
+        }
+
+        #submit-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        #submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Result Section */
+        .result-section {
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-card {
+            background: var(--color-surface);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .badge.positive {
+            background-color: var(--color-positive-bg);
+            color: var(--color-positive);
+        }
+
+        .badge.negative {
+            background-color: var(--color-negative-bg);
+            color: var(--color-negative);
+        }
+
+        .badge.neutral {
+            background-color: var(--color-neutral-bg);
+            color: var(--color-neutral);
+        }
+
+        .confidence-meter {
+            margin-bottom: 1.25rem;
+        }
+
+        .confidence-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--color-text-secondary);
+        }
+
+        #confidence-value {
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .confidence-bar {
+            height: 10px;
+            background-color: var(--color-border);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 0.5s ease, background-color 0.3s ease;
+            width: 0%;
+        }
+
+        .confidence-fill.positive {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+        }
+
+        .confidence-fill.negative {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+        }
+
+        .confidence-fill.neutral {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+        }
+
+        .result-description {
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Examples Section */
+        .examples-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .examples-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-text-secondary);
+        }
+
+        .example-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .example-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            background: var(--color-surface);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--color-text);
+            transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+        }
+
+        .example-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .example-btn.positive:hover {
+            border-color: var(--color-positive);
+        }
+
+        .example-btn.negative:hover {
+            border-color: var(--color-negative);
+        }
+
+        .example-btn.neutral:hover {
+            border-color: var(--color-neutral);
+        }
+
+        /* Error Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-error);
+            color: white;
+            padding: 0.85rem 1.5rem;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* Server-rendered result (fallback) */
+        .server-result {
+            background: var(--color-surface);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 1.5rem;
+        }
+
+        .server-result h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .server-result p {
+            color: var(--color-text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .server-result .sentiment-label {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: capitalize;
+            margin: 1rem 0;
+        }
+
+        .server-result .sentiment-label.positive { color: var(--color-positive); }
+        .server-result .sentiment-label.negative { color: var(--color-negative); }
+        .server-result .sentiment-label.neutral { color: var(--color-neutral); }
+
+        /* Model not loaded error */
+        .model-error {
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .model-error h2 {
+            color: var(--color-error);
+            margin-bottom: 0.75rem;
+        }
+
+        .model-error p {
+            color: var(--color-text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .container {
+                padding: 1.5rem 1rem 2rem;
+            }
+
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            .form-section, .result-card {
+                padding: 1.25rem;
+            }
+
+            .form-footer {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+            }
+
+            #char-count {
+                text-align: center;
+            }
+
+            #submit-btn {
+                width: 100%;
+            }
+
+            .example-buttons {
+                flex-direction: column;
+            }
+
+            .example-btn {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 Review Sentiment Classifier</h1>
+            <p class="subtitle">Analyze the sentiment of customer reviews using machine learning</p>
+        </header>
+
+        <main>
+            {% if model_error %}
+            <div class="model-error">
+                <h2>⚠️ Model Not Available</h2>
+                <p>The sentiment model has not been trained yet. Please run the training script first:</p>
+                <pre style="text-align:left; margin-top:1rem; padding:1rem; background:#f1f5f9; border-radius:8px; overflow-x:auto;">python scripts/train.py</pre>
+            </div>
+            {% endif %}
+
+            {% if sentiment is not none and not model_error %}
+            <div class="server-result">
+                <h2>Analysis Result</h2>
+                <p class="sentiment-label {{ sentiment }}">{{ sentiment }}</p>
+                <p>Confidence: {{ confidence|floatformat:1 }}%</p>
+                <p>{{ description }}</p>
+            </div>
+            {% endif %}
+
+            <section class="form-section">
+                <form id="sentiment-form">
+                    {% csrf_token %}
+                    <label for="review-text">Enter Customer Review</label>
+                    <textarea
+                        id="review-text"
+                        name="review"
+                        placeholder="Type or paste a customer review here..."
+                        rows="6"
+                        required
+                    >{{ initial_review|default:'' }}</textarea>
+                    <div class="form-footer">
+                        <span id="char-count">0 characters</span>
+                        <button type="submit" id="submit-btn">
+                            <span class="btn-text">Analyze Sentiment</span>
+                            <span class="btn-loader" hidden>Loading...</span>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <section id="result-section" class="result-section" hidden>
+                <div class="result-card">
+                    <div class="result-header">
+                        <h2>Analysis Result</h2>
+                        <span id="sentiment-badge" class="badge"></span>
+                    </div>
+                    <div class="result-body">
+                        <div class="confidence-meter">
+                            <div class="confidence-label">
+                                <span>Confidence</span>
+                                <span id="confidence-value">0%</span>
+                            </div>
+                            <div class="confidence-bar">
+                                <div id="confidence-fill" class="confidence-fill"></div>
+                            </div>
+                        </div>
+                        <p class="result-description" id="result-description"></p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="examples-section">
+                <h3>Try These Examples</h3>
+                <div class="example-buttons">
+                    <button class="example-btn positive" data-review="This product is absolutely amazing! Best purchase I've ever made. The quality exceeded all my expectations and the customer service was outstanding.">
+                        😊 Positive
+                    </button>
+                    <button class="example-btn negative" data-review="Terrible experience. The product broke after one day and customer support was unhelpful. Complete waste of money. I would not recommend this to anyone.">
+                        😞 Negative
+                    </button>
+                    <button class="example-btn neutral" data-review="The product is okay. It does what it's supposed to do but nothing more. Average quality for the price.">
+                        😐 Neutral
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Powered by TF-IDF &amp; Machine Learning • Built with Django</p>
+        </footer>
+    </div>
+
+    <div id="error-toast" class="toast" hidden>
+        <span class="toast-icon">⚠️</span>
+        <span id="error-message"></span>
+    </div>
+
+    <script>
+        (function () {
+            'use strict';
+
+            var form = document.getElementById('sentiment-form');
+            var reviewTextarea = document.getElementById('review-text');
+            var charCount = document.getElementById('char-count');
+            var submitBtn = document.getElementById('submit-btn');
+            var btnText = submitBtn.querySelector('.btn-text');
+            var btnLoader = submitBtn.querySelector('.btn-loader');
+            var resultSection = document.getElementById('result-section');
+            var sentimentBadge = document.getElementById('sentiment-badge');
+            var confidenceValue = document.getElementById('confidence-value');
+            var confidenceFill = document.getElementById('confidence-fill');
+            var resultDescription = document.getElementById('result-description');
+            var errorToast = document.getElementById('error-toast');
+            var errorMessage = document.getElementById('error-message');
+            var exampleButtons = document.querySelectorAll('.example-btn');
+
+            // Initialize character count
+            if (reviewTextarea && charCount) {
+                charCount.textContent = reviewTextarea.value.length + ' characters';
+            }
+
+            reviewTextarea.addEventListener('input', function () {
+                var len = this.value.length;
+                charCount.textContent = len + ' character' + (len !== 1 ? 's' : '');
+            });
+
+            exampleButtons.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var review = this.getAttribute('data-review');
+                    reviewTextarea.value = review;
+                    charCount.textContent = review.length + ' characters';
+                    reviewTextarea.focus();
+                });
+            });
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                var review = reviewTextarea.value.trim();
+                if (!review) {
+                    showError('Please enter a review before analyzing.');
+                    return;
+                }
+
+                setLoading(true);
+                resultSection.setAttribute('hidden', '');
+
+                fetch('/api/predict/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken()
+                    },
+                    body: JSON.stringify({ review: review })
+                })
+                    .then(function (response) {
+                        if (!response.ok) {
+                            return response.json().then(function (data) {
+                                throw new Error(data.error || 'Server error. Please try again.');
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        displayResult(data);
+                    })
+                    .catch(function (error) {
+                        showError(error.message || 'Failed to connect to the server.');
+                    })
+                    .finally(function () {
+                        setLoading(false);
+                    });
+            });
+
+            function displayResult(data) {
+                var sentiment = data.sentiment || 'unknown';
+                var confidence = data.confidence !== undefined ? data.confidence : 0;
+                var confidencePercent = Math.round(confidence * 100);
+
+                sentimentBadge.textContent = sentiment;
+                sentimentBadge.className = 'badge ' + sentiment;
+
+                confidenceValue.textContent = confidencePercent + '%';
+                confidenceFill.className = 'confidence-fill ' + sentiment;
+                requestAnimationFrame(function () {
+                    confidenceFill.style.width = confidencePercent + '%';
+                });
+
+                resultDescription.textContent = buildDescription(sentiment, confidence);
+
+                resultSection.removeAttribute('hidden');
+                resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            function buildDescription(sentiment, confidence) {
+                var level;
+                if (confidence >= 0.8) level = 'strongly';
+                else if (confidence >= 0.6) level = 'moderately';
+                else level = 'slightly';
+
+                var messages = {
+                    positive: 'This review expresses a ' + level + ' positive sentiment. The customer appears satisfied with their experience.',
+                    negative: 'This review expresses a ' + level + ' negative sentiment. The customer seems dissatisfied and may need attention.',
+                    neutral: 'This review has a ' + level + ' neutral sentiment. The customer\'s opinion appears balanced or mixed.'
+                };
+
+                return messages[sentiment] || 'Sentiment analysis complete.';
+            }
+
+            function setLoading(isLoading) {
+                submitBtn.disabled = isLoading;
+                if (isLoading) {
+                    btnText.setAttribute('hidden', '');
+                    btnLoader.removeAttribute('hidden');
+                } else {
+                    btnText.removeAttribute('hidden');
+                    btnLoader.setAttribute('hidden', '');
+                }
+            }
+
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorToast.removeAttribute('hidden');
+                setTimeout(function () {
+                    errorToast.setAttribute('hidden', '');
+                }, 5000);
+            }
+
+            function getCSRFToken() {
+                var name = 'csrftoken';
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue || '';
+            }
+        })();
+    </script>
+</body>
+</html>
