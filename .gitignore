@@ -1,0 +1,39 @@
+# Python virtual environment
+venv/
+env/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+staticfiles/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# ML models (large binary files - keep in .gitignore for clean repo)
+# Uncomment if you don't want to commit model files:
+# models/*.pkl
+# models/*.png
+# models/*.json
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Temporary files
+*.tmp
+*.bak
